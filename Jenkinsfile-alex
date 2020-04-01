@@ -13,7 +13,7 @@ pipeline{
         }
         stage("Push to DockerHub"){
             steps{
-                withCredentials([string(credentialsId: 'DOCKER_HUB_PASS', variable: 'dockerhub-pass')]) {
+                withCredentials([string(credentialsId: 'DOCKER_HUB_PASS', variable: 'dockerhubPASS')]){
                      sh "docker login -u alexanto -p ${dockerhub-pass}"
                      sh "docker push alexanto/k8s:${DOCKER_TAG}"
                     
