@@ -1,16 +1,27 @@
 pipeline{
     agent any
-    
+
     environment{
         DOCKER_TAG = getDockerTag()
     }
-    
+
     stages{
         stage("Build docker image"){
             steps{
                 sh "docker build . -t alexanto/k8s:${DOCKER_TAG}"
             }
         }
+        stage("Push to DockerHub"){
+            steps{
+                withCredentials([string(credentialsId: 'DOCKER_HUB_PASS', variable: 'dockerhub-pass')]) {
+                     sh "docker login -u alexanto -p ${dockerhub-pass}"
+                     sh "docker push alexanto/k8s:${DOCKER_TAG}"
+                    
+                }
+                
+            }
+        }
+        
     }
 }
 
@@ -18,3 +29,4 @@ def getDockerTag(){
     def tag = sh script: 'git rev-parse HEAD', returnStdout: true
     return tag
 }
+
